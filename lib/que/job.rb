@@ -79,6 +79,10 @@ module Que
           end
         end
 
+        if args.key?(:queue_name) || args.key?(:queue)
+          queue = args[:queue_name] || args[:queue]          
+        end
+
         attrs = {
           queue:    queue    || resolve_que_setting(:queue) || Que.default_queue,
           priority: priority || resolve_que_setting(:priority),
