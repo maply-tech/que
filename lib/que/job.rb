@@ -79,10 +79,6 @@ module Que
           end
         end
 
-        if args.key?(:queue_name) || args.key?(:queue)
-          queue = args[:queue_name] || args[:queue]          
-        end
-
         attrs = {
           queue:    queue    || resolve_que_setting(:queue) || Que.default_queue,
           priority: priority || resolve_que_setting(:priority),
@@ -93,6 +89,10 @@ module Que
             job_class || name ||
               raise(Error, "Can't enqueue an anonymous subclass of Que::Job"),
         }
+
+        if attrs[:args].key?(:queue_name) || attrs[:args].key?(:queue)
+          attrs[:queue] = attrs[:args][:queue_name] || attrs[:args][:queue]          
+        end
 
         if attrs[:run_at].nil? && resolve_que_setting(:run_synchronously)
           attrs[:args] = Que.deserialize_json(attrs[:args])
